@@ -4,13 +4,13 @@
   "description": "",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "server":"nodemon server.js"
+    "start": "nodemon server.js",
+    "server": "nodemon server.js"
   },
   "author": "Arsh",
   "license": "ISC",
   "dependencies": {
-    "bcryptjs": "^2.4.3",
+    "bcrypt": "^5.0.0",
     "config": "^3.3.1",
     "express": "^4.17.1",
     "express-validator": "^6.6.1",

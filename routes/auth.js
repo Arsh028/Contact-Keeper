@@ -6,7 +6,7 @@ const router = express.Router();
 //@access Private
 
 router.get("/",(req,res) =>{ 
-    res.send("get logged in user")
+    res.send("get logged in user");
 });
 
 
