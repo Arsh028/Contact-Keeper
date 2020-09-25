@@ -13,7 +13,6 @@ const saltRounds = 10;
 //@route POST api/users
 //@desc To register user
 //@access Public
-
 router.post("/",
     [ 
         check('email', 'Email length should be 10 to 30 characters') 
@@ -43,7 +42,7 @@ router.post("/",
                 return res.status(400).json({ msg : "user already exists"});
             }
 
-            //creating a new user in db
+            //creating a new user in db and hashing
             user = new User({
                 name,
                 email,
@@ -57,16 +56,16 @@ router.post("/",
                 });
             });
             user.save();
+            //END-creating a new user in db and hashing
             
-
-            //generate token
+            //generate a token using jwt
             const payload = {
                 users : {
                     id : user.id
                 }
             };
 
-            //sign in user
+            //sign in user token
             jwt.sign(payload, config.get("TokenSECRET"),
                 function(err, token) 
                 {
