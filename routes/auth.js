@@ -7,6 +7,7 @@ const User = require("../models/User");
 
 const jwt = require("jsonwebtoken");
 const config = require("config");
+const auth = require("../middleware/auth");
 
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
@@ -14,16 +15,22 @@ const saltRounds = 10;
 //@route GET api/auth
 //@desc get logged in user
 //@access Private
-
-router.get("/",(req,res) =>{ 
-    res.send("get logged in user");
+router.get("/",auth, async (req,res) =>{ 
+    try {
+        const user = await User.find(req.user).select("-password");
+        //const user = await User.findOne({ '_id': req.user.id})
+        //const user = await User.findById(req.user.id).select('-password');
+        res.json(user);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send("server error");
+    }
 });
 
 
 //@route POST api/auth
 //@desc log in user
 //@access Private
-
 router.post("/",
     [
         check('email', 'Email length should be 10 to 30 characters') 
@@ -51,29 +58,28 @@ router.post("/",
 
             //check password
             bcrypt.compare(password, user.password, function(err, result) {
-                if(result == true)
+                if(result == false)
                 {
-                    res.render("secrets");
+                    //if password matches
+                    const payload = {
+                        users : {
+                            id : user.id
+                        }
+                    };
+                
+                    //sign in user token
+                    jwt.sign(payload, config.get("TokenSECRET"),
+                        function(err, token) 
+                        {
+                            if(err){throw err;}
+                            //console.log(token);
+                            res.json({token});
+                        }
+                    );   
                 }
                 else{return res.status(400).json({ msg : "Invalid credentials"});}
             });
 
-            //if password matches
-            const payload = {
-                users : {
-                    id : user.id
-                }
-            };
-
-            //sign in user token
-            jwt.sign(payload, config.get("TokenSECRET"),
-                function(err, token) 
-                {
-                    if(err){throw err;}
-                    console.log(token);
-                    res.json({token});
-                }
-            );   
         } catch (error) {
             console.log(error);
             res.status(500).send("server error");

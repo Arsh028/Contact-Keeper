@@ -70,7 +70,6 @@ router.post("/",
                 function(err, token) 
                 {
                     if(err){throw err;}
-                    console.log(token);
                     res.json({token});
                 }
             );
@@ -80,7 +79,4 @@ router.post("/",
         }
     });
 
-// router.post("/",(req,res) =>{
-//     res.send(req.body);
-// });
 module.exports = router;

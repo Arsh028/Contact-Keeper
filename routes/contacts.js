@@ -1,12 +1,24 @@
 const express = require("express");
 const router = express.Router();
 
+const jwt = require("jsonwebtoken");
+const { check, validationResult } = require('express-validator');
+const User = require("../models/User");
+const Contact = require("../models/Contact");
+const auth = require("../middleware/auth");
 //@route GET api/contacts
 //@desc get all contacts
 //@access Public
 
-router.get("/",(req,res) =>{ 
-    res.send("get all contacts");
+router.get("/", auth, async (req,res) =>{ 
+    try {
+        const contacts = await Contact.find({user : req.user}).sort({date :-1});
+        res.json(contacts);
+    } catch (error) {
+        console.log("ERROR IN routes/contacts "+error);
+        console.log("server error");
+    }
+    
 });
 
 //@route POST api/contacts
