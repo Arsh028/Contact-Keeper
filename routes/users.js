@@ -60,7 +60,7 @@ router.post("/",
             
             //generate a token using jwt
             const payload = {
-                users : {
+                user : {
                     id : user.id
                 }
             };
